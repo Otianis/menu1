@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة تحكم المالك | WebCraft</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="admin">
+
+  <header>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>🎛️ لوحة تحكم المالك - WebCraft</h1>
+    <div class="admin-actions">
+      <button onclick="previewSite()">👁️ معاينة الموقع</button>
+      <button onclick="generateQRCode()">🔗 توليد QR</button>
+      <button onclick="printQRCode()">🖨️ طباعة QR</button>
+      <button onclick="saveToStorage()">💾 تحديث الموقع</button>
+    </div>
+    <canvas id="qrcode"></canvas>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>➕ إضافة منتج جديد</h2>
+      <input type="text" id="section" placeholder="اسم القسم (مثلاً: مشروبات)" />
+      <input type="text" id="name" placeholder="اسم المنتج (مثلاً: قهوة تركية)" />
+      <textarea id="desc" placeholder="وصف المنتج..."></textarea>
+      <input type="number" id="price" placeholder="السعر بالدينار" />
+      <input type="file" id="img" accept="image/*" />
+      <button onclick="addOrUpdateProduct()" id="addBtn">➕ إضافة المنتج</button>
+    </section>
+
+    <section class="menu-section">
+      <h2>📋 قائمة المنتجات</h2>
+      <div id="menu-list"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

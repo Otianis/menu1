@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>عرض المنتجات | WebCraft</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="client">
+
+  <header>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1 id="section-title">🍽️ المنتجات</h1>
+  </header>
+
+  <main>
+    <section class="product-grid" id="product-grid"></section>
+  </main>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const sectionName = urlParams.get("section");
+    const sectionTitle = document.getElementById("section-title");
+    const grid = document.getElementById("product-grid");
+    const menuData = JSON.parse(localStorage.getItem("menuData")) || {};
+
+    if (!sectionName || !menuData[sectionName]) {
+      sectionTitle.textContent = "القسم غير موجود";
+    } else {
+      sectionTitle.textContent = `📂 ${sectionName}`;
+      const products = menuData[sectionName];
+      products.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          ${item.img ? `<img src="${item.img}" alt="${item.name}">` : ""}
+          <h3>${item.name}</h3>
+          <p>${item.desc}</p>
+          <p class="price">${item.price} دج</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>

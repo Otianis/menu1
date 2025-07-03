@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>قائمة الطعام | WebCraft Menu</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="client">
+
+  <header>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>📋 قائمة الطعام</h1>
+  </header>
+
+  <main>
+    <section class="section-list">
+      <h2>🍽️ الأقسام</h2>
+      <div id="sections"></div>
+    </section>
+  </main>
+
+  <script>
+    const container = document.getElementById("sections");
+    const menuData = JSON.parse(localStorage.getItem("menuData")) || {};
+
+    function createSectionButtons() {
+      container.innerHTML = "";
+      Object.keys(menuData).forEach((section) => {
+        const btn = document.createElement("button");
+        btn.className = "section-btn";
+        btn.textContent = section;
+        btn.onclick = () => {
+          window.location.href = `menu.html?section=${encodeURIComponent(section)}`;
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    createSectionButtons();
+  </script>
+</body>
+</html>
