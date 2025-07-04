@@ -1,43 +1,77 @@
 <!DOCTYPE html>
 <html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة تحكم المالك | WebCraft</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body class="admin">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎛️ لوحة تحكم المالك | WebCraft</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+    <!-- Firebase SDKs -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        doc,
+        deleteDoc,
+        updateDoc,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <header>
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>🎛️ لوحة تحكم المالك - WebCraft</h1>
-    <div class="admin-actions">
-      <button onclick="previewSite()">👁️ معاينة الموقع</button>
-      <button onclick="generateQRCode()">🔗 توليد QR</button>
-      <button onclick="printQRCode()">🖨️ طباعة QR</button>
-      <button onclick="saveToStorage()">💾 تحديث الموقع</button>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUPH5CuY34ZmNlpGA1XrsFreLHSevjgfQ",
+        authDomain: "menuapp-9f554.firebaseapp.com",
+        projectId: "menuapp-9f554",
+        storageBucket: "menuapp-9f554.appspot.com",
+        messagingSenderId: "232255681174",
+        appId: "1:232255681174:web:bdc5bfb0ff8df988c348b7",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      window.db = db;
+      window.firestoreFns = {
+        collection,
+        addDoc,
+        getDocs,
+        doc,
+        deleteDoc,
+        updateDoc,
+      };
+    </script>
+  </head>
+  <body>
+    <header>
+      <img src="logo.png" alt="شعار WebCraft" />
+      <h1>🎛️ لوحة تحكم المالك</h1>
+    </header>
+
+    <div class="container">
+      <div class="form-section" id="form-top">
+        <h2>➕ إضافة قسم / منتج جديد</h2>
+        <input id="section" placeholder="اسم القسم (مثلاً: مشروبات)" required />
+        <input
+          id="name"
+          placeholder="اسم المنتج (مثلاً: عصير مانجو)"
+          required
+        />
+        <textarea id="desc" placeholder="وصف المنتج"></textarea>
+        <input id="price" placeholder="السعر بالدينار" type="number" required />
+        <input id="img" type="file" accept="image/*" />
+        <button onclick="addProduct()">➕ إضافة إلى المنيو</button>
+      </div>
+
+      <div class="menu-section">
+        <h2>📋 قائمة المنتجات</h2>
+        <div id="menu-list"></div>
+      </div>
     </div>
-    <canvas id="qrcode"></canvas>
-  </header>
-
-  <main>
-    <section class="form-section">
-      <h2>➕ إضافة منتج جديد</h2>
-      <input type="text" id="section" placeholder="اسم القسم (مثلاً: مشروبات)" />
-      <input type="text" id="name" placeholder="اسم المنتج (مثلاً: قهوة تركية)" />
-      <textarea id="desc" placeholder="وصف المنتج..."></textarea>
-      <input type="number" id="price" placeholder="السعر بالدينار" />
-      <input type="file" id="img" accept="image/*" />
-      <button onclick="addOrUpdateProduct()" id="addBtn">➕ إضافة المنتج</button>
-    </section>
-
-    <section class="menu-section">
-      <h2>📋 قائمة المنتجات</h2>
-      <div id="menu-list"></div>
-    </section>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script src="script.js"></script>
-</body>
+  </body>
 </html>
