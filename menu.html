@@ -1,46 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>عرض المنتجات | WebCraft</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body class="client">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🍽️ قائمة القسم | WebCraft Menu</title>
+    <link rel="icon" href="logo.png" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js"></script>
 
-  <header>
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1 id="section-title">🍽️ المنتجات</h1>
-  </header>
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <main>
-    <section class="product-grid" id="product-grid"></section>
-  </main>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUPH5CuY34ZmNlpGA1XrsFreLHSevjgfQ",
+        authDomain: "menuapp-9f554.firebaseapp.com",
+        projectId: "menuapp-9f554",
+        storageBucket: "menuapp-9f554.appspot.com",
+        messagingSenderId: "232255681174",
+        appId: "1:232255681174:web:bdc5bfb0ff8df988c348b7",
+      };
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const sectionName = urlParams.get("section");
-    const sectionTitle = document.getElementById("section-title");
-    const grid = document.getElementById("product-grid");
-    const menuData = JSON.parse(localStorage.getItem("menuData")) || {};
+      const app = initializeApp(firebaseConfig);
+      window.db = getFirestore(app);
+    </script>
+  </head>
+  <body>
+    <header>
+      <img src="logo.png" alt="شعار" />
+      <h1 id="section-title">🍽️ قسم</h1>
+    </header>
 
-    if (!sectionName || !menuData[sectionName]) {
-      sectionTitle.textContent = "القسم غير موجود";
-    } else {
-      sectionTitle.textContent = `📂 ${sectionName}`;
-      const products = menuData[sectionName];
-      products.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
-          ${item.img ? `<img src="${item.img}" alt="${item.name}">` : ""}
-          <h3>${item.name}</h3>
-          <p>${item.desc}</p>
-          <p class="price">${item.price} دج</p>
+    <div class="container" id="product-list">
+      <p>⏳ جارٍ تحميل المنتجات...</p>
+    </div>
+
+    <script type="module">
+      import {
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const section = urlParams.get("section");
+
+      document.getElementById(
+        "section-title"
+      ).textContent = `🍽️ قسم: ${section}`;
+      const container = document.getElementById("product-list");
+      const db = window.db;
+
+      const loadProducts = async () => {
+        const snapshot = await getDocs(
+          collection(db, "menu", section, "items")
+        );
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = "<p>لا توجد منتجات في هذا القسم.</p>";
+          return;
+        }
+
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "menu-card";
+          card.innerHTML = `
+          ${
+            data.img
+              ? `<img src="${data.img}" style="width:100%;border-radius:8px;max-height:200px;object-fit:cover;margin-bottom:10px;">`
+              : ""
+          }
+          <h4>${data.name}</h4>
+          <p>${data.desc}</p>
+          <p><strong>السعر:</strong> ${data.price} دج</p>
         `;
-        grid.appendChild(card);
-      });
-    }
-  </script>
-</body>
+          container.appendChild(card);
+        });
+      };
+
+      loadProducts();
+    </script>
+  </body>
 </html>
