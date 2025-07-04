@@ -1,43 +1,73 @@
 <!DOCTYPE html>
 <html lang="ar">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>قائمة الطعام | WebCraft Menu</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body class="client">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📂 الأقسام | WebCraft Menu</title>
+    <link rel="icon" href="logo.png" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="script.js"></script>
 
-  <header>
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>📋 قائمة الطعام</h1>
-  </header>
+    <!-- Firebase -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <main>
-    <section class="section-list">
-      <h2>🍽️ الأقسام</h2>
-      <div id="sections"></div>
-    </section>
-  </main>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAUPH5CuY34ZmNlpGA1XrsFreLHSevjgfQ",
+        authDomain: "menuapp-9f554.firebaseapp.com",
+        projectId: "menuapp-9f554",
+        storageBucket: "menuapp-9f554.appspot.com",
+        messagingSenderId: "232255681174",
+        appId: "1:232255681174:web:bdc5bfb0ff8df988c348b7",
+      };
 
-  <script>
-    const container = document.getElementById("sections");
-    const menuData = JSON.parse(localStorage.getItem("menuData")) || {};
+      const app = initializeApp(firebaseConfig);
+      window.db = getFirestore(app);
+    </script>
+  </head>
+  <body>
+    <header>
+      <img src="logo.png" alt="شعار" />
+      <h1>📂 أقسام المنيو</h1>
+    </header>
 
-    function createSectionButtons() {
-      container.innerHTML = "";
-      Object.keys(menuData).forEach((section) => {
-        const btn = document.createElement("button");
-        btn.className = "section-btn";
-        btn.textContent = section;
-        btn.onclick = () => {
-          window.location.href = `menu.html?section=${encodeURIComponent(section)}`;
-        };
-        container.appendChild(btn);
-      });
-    }
+    <div class="container" id="sections-container">
+      <p>⏳ جارٍ تحميل الأقسام...</p>
+    </div>
 
-    createSectionButtons();
-  </script>
-</body>
+    <script type="module">
+      import {
+        getDocs,
+        collection,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const container = document.getElementById("sections-container");
+      const db = window.db;
+
+      const loadSections = async () => {
+        const snapshot = await getDocs(collection(db, "menu"));
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = "<p>لا توجد أقسام حتى الآن.</p>";
+          return;
+        }
+
+        snapshot.forEach((doc) => {
+          const section = doc.id;
+          const btn = document.createElement("button");
+          btn.textContent = section;
+          btn.className = "section-button";
+          btn.onclick = () =>
+            (window.location.href = `menu.html?section=${encodeURIComponent(
+              section
+            )}`);
+          container.appendChild(btn);
+        });
+      };
+
+      loadSections();
+    </script>
+  </body>
 </html>
